@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">蓝牙调试</string>
+    <string name="app_version">1.2</string>
+    <string name="button_main_btnConnect_title">连接</string>
+    <string name="button_main_btnDebug_title">调试</string>
+    <string name="button_main_btnAbout_title">关于</string>
+</resources>
