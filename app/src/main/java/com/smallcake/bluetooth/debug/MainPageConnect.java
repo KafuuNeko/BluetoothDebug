@@ -6,6 +6,7 @@ package com.smallcake.bluetooth.debug;
  * Email：66492422@qq.com
  * */
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -13,11 +14,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,7 +143,15 @@ public class MainPageConnect extends Fragment {
         pBtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doDiscovry();
+                if (!BluetoothAdapter.getDefaultAdapter().isEnabled())
+                {
+                    Toast.makeText(getContext(), "请先启动蓝牙！", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (checkPermission()) {
+                        doDiscovry();
+                    }
+                }
+
             }
         });
 
@@ -330,6 +341,31 @@ public class MainPageConnect extends Fragment {
                 pBtnCloseConnect.setText("断开连接");
             }
         });
+    }
+
+    private boolean checkPermission() {
+        boolean result = true;
+        String[] permissions = new String[]
+                {
+                        //ACCESS_FINE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_ADMIN,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                };
+
+        for (String per : permissions)
+        {
+            result = result & (ActivityCompat.checkSelfPermission(getContext(), per) == PackageManager.PERMISSION_GRANTED);
+        }
+
+        if (!result)
+        {
+            ActivityCompat.requestPermissions(getActivity(), permissions, 1);
+        }
+
+        return result;
+
     }
 
 }
